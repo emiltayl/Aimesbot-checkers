@@ -1,7 +1,7 @@
 #include "checkerboard.h"
 
 board_t input2board(char *input) {
-    board_t board = {0, 0, 0};
+    board_t board = {0, 0, 0, 0};
 
     board.black = (input[0] == 'x' || input[0] == 'X')
                 | ((input[1] == 'x' || input[1] == 'X') << 1)
@@ -101,6 +101,8 @@ board_t input2board(char *input) {
                 | ((input[29] == 'O' || input[29] == 'X') << 29)
                 | ((input[30] == 'O' || input[30] == 'X') << 30)
                 | ((input[31] == 'O' || input[31] == 'X') << 31);
+
+    board.occupied = board.white & board.black;
 
     return board;
 }

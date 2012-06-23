@@ -17,6 +17,7 @@ typedef struct board_struct {
     board black;
     board white;
     board kings;
+    board occupied;
 } board_t;
 
 board_t input2board(char *);
