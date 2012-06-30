@@ -102,14 +102,18 @@ board_t input2board(char *input) {
                 | ((input[30] == 'O' || input[30] == 'X') << 30)
                 | ((input[31] == 'O' || input[31] == 'X') << 31);
 
-    board.occupied = board.white & board.black;
+    board.occupied = board.white | board.black;
 
     return board;
 }
 
-unsigned int population_count(_board board) {
+unsigned int population_count(_board x) {
     // http://stackoverflow.com/questions/109023/best-algorithm-to-count-the-number-of-set-bits-in-a-32-bit-integer
-    board = board - ((board >> 1) & 0x55555555);
-    board = (board & 0x33333333) + ((board >> 2) & 0x33333333);
-    return (((board + (board >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24;
+
+    x = x - ((x >> 1) & 0x55555555);
+    x = (x & 0x33333333) + ((x >> 2) & 0x33333333);
+    x = (x + (x >> 4)) & 0x0F0F0F0F;
+    x = x + (x >> 8);
+    x = x + (x >> 16);
+    return x & 0x0000003F;
 }
