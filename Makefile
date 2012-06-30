@@ -1,5 +1,5 @@
 CC 	    = gcc
-CFLAGS  = -c -Wall
+CFLAGS  = -c -Wall -pipe -Wshadow
 LDFLAGS = -Wl,--gc-sections
 LIBS    =
 
@@ -11,7 +11,7 @@ ifeq ($(DEBUG),y)
 	CFLAGS += -g
 	STRIP =
 else
-	CFLAGS += -O3 -march=native
+	CFLAGS += -O3 -march=native -fomit-frame-pointer
 	STRIP = strip --strip-all $(EXECUTABLE)
 endif
 
