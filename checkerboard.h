@@ -2,7 +2,6 @@
 #define BOARD_HEADER_H_
 #include <stdint.h>
 
-#define POPULATION_COUNT(x) __builtin_popcount(x)
 #define GET_BIT(number, bit) (number & (1 << bit))
 #define SET_BIT(number, bit) (number | (1 << bit))
 #define UNSET_BIT(number, bit) (number & ~(1 << bit))
@@ -21,4 +20,5 @@ typedef struct board_struct {
 } board_t;
 
 board_t input2board(char *);
+unsigned int population_count(_board);
 #endif

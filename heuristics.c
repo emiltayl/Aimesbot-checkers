@@ -1,12 +1,13 @@
+#include "checkerboard.h"
 #include "heuristics.h"
 
 heuristic_t caclulate_heuristics(board_t board, int isPlayerWhite, int isItPlayersTurn) {
     int whiteModifier = (isPlayerWhite << 1) - 1,
         blackModifier = -whiteModifier,
-        whiteCount = POPULATION_COUNT(board.white),
-        blackCount = POPULATION_COUNT(board.black),
-        whiteKingCount = POPULATION_COUNT(board.white & board.kings),
-        blackKingCount = POPULATION_COUNT(board.black & board.kings);
+        whiteCount = population_count(board.white),
+        blackCount = population_count(board.black),
+        whiteKingCount = population_count(board.white & board.kings),
+        blackKingCount = population_count(board.black & board.kings);
 
     // Turn bonus
     heuristic_t score = (isItPlayersTurn << 3) - (isItPlayersTurn << 1) - 3; //isItPlayersTurn*6-3
@@ -18,8 +19,8 @@ heuristic_t caclulate_heuristics(board_t board, int isPlayerWhite, int isItPlaye
     score += blackModifier * blackKingCount* 50;
 
     // Back row bonus
-    score += POPULATION_COUNT(0xF0000000 | board.occupied) * 7 * whiteModifier;
-    score += POPULATION_COUNT(0x0000000F | board.occupied) * 7 * blackModifier;
+    score += population_count(0xF0000000 | board.occupied) * 7 * whiteModifier;
+    score += population_count(0x0000000F | board.occupied) * 7 * blackModifier;
 
     // Dog hole penalty
     score += (GET_BIT(board.black, 27) && GET_BIT(board.white, 31)) * 10 * whiteModifier;

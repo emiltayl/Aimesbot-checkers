@@ -106,3 +106,10 @@ board_t input2board(char *input) {
 
     return board;
 }
+
+unsigned int population_count(_board board) {
+    // http://stackoverflow.com/questions/109023/best-algorithm-to-count-the-number-of-set-bits-in-a-32-bit-integer
+    board = board - ((board >> 1) & 0x55555555);
+    board = (board & 0x33333333) + ((board >> 2) & 0x33333333);
+    return (((board + (board >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24;
+}
