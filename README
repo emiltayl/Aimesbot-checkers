@@ -3,9 +3,9 @@ Emil T. Bye's contribution to http://arkt.is/checkers/ (in Norwegian), a
 checkers AI competition.
 
 Disclaimer: Much of the code is ugly, mostly because I've tried to be "smart"
-and write code that is supposed to be as efficient as possible. This is
-generally not a good idea, but the purpose with this competition is not to write
-"good" code.
+and write code that is _supposed_ to be as efficient as possible. This is not a
+good idea, but the purpose with this competition is not to write "good" code,
+but to hack something together and hope for the best.
 
-Generally you can use this code for whatever you'd like, as long as it's
-something nice.
+Feel free to use this code for whatever you'd like, as long as it's something
+nice.
