@@ -1,3 +1,5 @@
 *.o
 *.swp
 aimesbot
+checkers.py
+randomAI.py
