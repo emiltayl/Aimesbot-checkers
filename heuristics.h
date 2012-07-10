@@ -8,6 +8,6 @@
 #define HEURISTIC_MIN INT_FAST32_MAX
 typedef int_fast32_t heuristic_t;
 
-heuristic_t calculate_heuristics(int isItWhiteTurn);
+heuristic_t calculate_heuristics(int isItSelfTurn);
 
 #endif
