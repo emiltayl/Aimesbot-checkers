@@ -147,7 +147,7 @@ void discover_even_jumps(movelist_t *movelist, move_t *jumpsSoFar, _board *self,
         if (can_even_position_do_jump(pos, other, SOUTH_EAST)) {
             jumpDone = 1;
 
-            jumpsSoFar->steps[jumpsSoFar->nsteps] = pos >> jumpModifiers[EVEN][SOUTH_EAST][1];
+            jumpsSoFar->steps[jumpsSoFar->nsteps] = pos << jumpModifiers[EVEN][SOUTH_EAST][1];
             jumpsSoFar->to = jumpsSoFar->steps[jumpsSoFar->nsteps];
             toggle_jump(pos, jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
             discover_even_jumps(movelist, jumpsSoFar, self, other, jumpNorth, jumpSouth);
@@ -204,7 +204,7 @@ void discover_odd_jumps(movelist_t *movelist, move_t *jumpsSoFar, _board *self, 
         if (can_odd_position_do_jump(pos, other, SOUTH_EAST)) {
             jumpDone = 1;
 
-            jumpsSoFar->steps[jumpsSoFar->nsteps] = pos >> jumpModifiers[ODD][SOUTH_EAST][1];
+            jumpsSoFar->steps[jumpsSoFar->nsteps] = pos << jumpModifiers[ODD][SOUTH_EAST][1];
             jumpsSoFar->to = jumpsSoFar->steps[jumpsSoFar->nsteps];
             toggle_jump(pos, jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
             discover_odd_jumps(movelist, jumpsSoFar, self, other, jumpNorth, jumpSouth);
