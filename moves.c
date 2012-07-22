@@ -107,50 +107,51 @@ void toggle_jump(_board from, _board to, _board *self, _board *other) {
 
 void discover_even_jumps(movelist_t *movelist, move_t *jumpsSoFar, _board *self, _board *other, int jumpNorth, int jumpSouth) {
     int jumpDone = 0;
+    _board pos = jumpsSoFar->to;
 
     jumpsSoFar->nsteps++;
 
     if (jumpNorth) {
-        if (can_even_position_do_jump(jumpsSoFar->to, other, NORTH_WEST)) {
+        if (can_even_position_do_jump(pos, other, NORTH_WEST)) {
             jumpDone = 1;
 
-            jumpsSoFar->steps[jumpsSoFar->nsteps] = jumpsSoFar->to >> jumpModifiers[EVEN][NORTH_WEST][1];
+            jumpsSoFar->steps[jumpsSoFar->nsteps] = pos >> jumpModifiers[EVEN][NORTH_WEST][1];
             jumpsSoFar->to = jumpsSoFar->steps[jumpsSoFar->nsteps];
-            toggle_jump(jumpsSoFar->steps[jumpsSoFar->nsteps-1], jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
+            toggle_jump(pos, jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
             discover_even_jumps(movelist, jumpsSoFar, self, other, jumpNorth, jumpSouth);
-            toggle_jump(jumpsSoFar->steps[jumpsSoFar->nsteps-1], jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
+            toggle_jump(pos, jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
         }
 
-        if (can_even_position_do_jump(jumpsSoFar->to, other, NORTH_EAST)) {
+        if (can_even_position_do_jump(pos, other, NORTH_EAST)) {
             jumpDone = 1;
 
-            jumpsSoFar->steps[jumpsSoFar->nsteps] = jumpsSoFar->to >> jumpModifiers[EVEN][NORTH_EAST][1];
+            jumpsSoFar->steps[jumpsSoFar->nsteps] = pos >> jumpModifiers[EVEN][NORTH_EAST][1];
             jumpsSoFar->to = jumpsSoFar->steps[jumpsSoFar->nsteps];
-            toggle_jump(jumpsSoFar->steps[jumpsSoFar->nsteps-1], jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
+            toggle_jump(pos, jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
             discover_even_jumps(movelist, jumpsSoFar, self, other, jumpNorth, jumpSouth);
-            toggle_jump(jumpsSoFar->steps[jumpsSoFar->nsteps-1], jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
+            toggle_jump(pos, jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
         }
     }
 
     if (jumpSouth) {
-        if (can_even_position_do_jump(jumpsSoFar->to, other, SOUTH_WEST)) {
+        if (can_even_position_do_jump(pos, other, SOUTH_WEST)) {
             jumpDone = 1;
 
-            jumpsSoFar->steps[jumpsSoFar->nsteps] = jumpsSoFar->to << jumpModifiers[EVEN][SOUTH_WEST][1];
+            jumpsSoFar->steps[jumpsSoFar->nsteps] = pos << jumpModifiers[EVEN][SOUTH_WEST][1];
             jumpsSoFar->to = jumpsSoFar->steps[jumpsSoFar->nsteps];
-            toggle_jump(jumpsSoFar->steps[jumpsSoFar->nsteps-1], jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
+            toggle_jump(pos, jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
             discover_even_jumps(movelist, jumpsSoFar, self, other, jumpNorth, jumpSouth);
-            toggle_jump(jumpsSoFar->steps[jumpsSoFar->nsteps-1], jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
+            toggle_jump(pos, jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
         }
 
-        if (can_even_position_do_jump(jumpsSoFar->to, other, SOUTH_EAST)) {
+        if (can_even_position_do_jump(pos, other, SOUTH_EAST)) {
             jumpDone = 1;
 
-            jumpsSoFar->steps[jumpsSoFar->nsteps] = jumpsSoFar->to >> jumpModifiers[EVEN][SOUTH_EAST][1];
+            jumpsSoFar->steps[jumpsSoFar->nsteps] = pos >> jumpModifiers[EVEN][SOUTH_EAST][1];
             jumpsSoFar->to = jumpsSoFar->steps[jumpsSoFar->nsteps];
-            toggle_jump(jumpsSoFar->steps[jumpsSoFar->nsteps-1], jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
+            toggle_jump(pos, jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
             discover_even_jumps(movelist, jumpsSoFar, self, other, jumpNorth, jumpSouth);
-            toggle_jump(jumpsSoFar->steps[jumpsSoFar->nsteps-1], jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
+            toggle_jump(pos, jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
         }
     }
 
@@ -163,50 +164,51 @@ void discover_even_jumps(movelist_t *movelist, move_t *jumpsSoFar, _board *self,
 
 void discover_odd_jumps(movelist_t *movelist, move_t *jumpsSoFar, _board *self, _board *other, int jumpNorth, int jumpSouth) {
     int jumpDone = 0;
+    _board pos = jumpsSoFar->to;
 
     jumpsSoFar->nsteps++;
 
     if (jumpNorth) {
-        if (can_odd_position_do_jump(jumpsSoFar->to, other, NORTH_WEST)) {
+        if (can_odd_position_do_jump(pos, other, NORTH_WEST)) {
             jumpDone = 1;
 
-            jumpsSoFar->steps[jumpsSoFar->nsteps] = jumpsSoFar->to >> jumpModifiers[ODD][NORTH_WEST][1];
+            jumpsSoFar->steps[jumpsSoFar->nsteps] = pos >> jumpModifiers[ODD][NORTH_WEST][1];
             jumpsSoFar->to = jumpsSoFar->steps[jumpsSoFar->nsteps];
-            toggle_jump(jumpsSoFar->steps[jumpsSoFar->nsteps-1], jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
+            toggle_jump(pos, jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
             discover_odd_jumps(movelist, jumpsSoFar, self, other, jumpNorth, jumpSouth);
-            toggle_jump(jumpsSoFar->steps[jumpsSoFar->nsteps-1], jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
+            toggle_jump(pos, jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
         }
 
-        if (can_odd_position_do_jump(jumpsSoFar->to, other, NORTH_EAST)) {
+        if (can_odd_position_do_jump(pos, other, NORTH_EAST)) {
             jumpDone = 1;
 
-            jumpsSoFar->steps[jumpsSoFar->nsteps] = jumpsSoFar->to >> jumpModifiers[ODD][NORTH_EAST][1];
+            jumpsSoFar->steps[jumpsSoFar->nsteps] = pos >> jumpModifiers[ODD][NORTH_EAST][1];
             jumpsSoFar->to = jumpsSoFar->steps[jumpsSoFar->nsteps];
-            toggle_jump(jumpsSoFar->steps[jumpsSoFar->nsteps-1], jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
+            toggle_jump(pos, jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
             discover_odd_jumps(movelist, jumpsSoFar, self, other, jumpNorth, jumpSouth);
-            toggle_jump(jumpsSoFar->steps[jumpsSoFar->nsteps-1], jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
+            toggle_jump(pos, jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
         }
     }
 
     if (jumpSouth) {
-        if (can_odd_position_do_jump(jumpsSoFar->to, other, SOUTH_WEST)) {
+        if (can_odd_position_do_jump(pos, other, SOUTH_WEST)) {
             jumpDone = 1;
 
-            jumpsSoFar->steps[jumpsSoFar->nsteps] = jumpsSoFar->to << jumpModifiers[ODD][SOUTH_WEST][1];
+            jumpsSoFar->steps[jumpsSoFar->nsteps] = pos << jumpModifiers[ODD][SOUTH_WEST][1];
             jumpsSoFar->to = jumpsSoFar->steps[jumpsSoFar->nsteps];
-            toggle_jump(jumpsSoFar->steps[jumpsSoFar->nsteps-1], jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
+            toggle_jump(pos, jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
             discover_odd_jumps(movelist, jumpsSoFar, self, other, jumpNorth, jumpSouth);
-            toggle_jump(jumpsSoFar->steps[jumpsSoFar->nsteps-1], jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
+            toggle_jump(pos, jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
         }
 
-        if (can_odd_position_do_jump(jumpsSoFar->to, other, SOUTH_EAST)) {
+        if (can_odd_position_do_jump(pos, other, SOUTH_EAST)) {
             jumpDone = 1;
 
-            jumpsSoFar->steps[jumpsSoFar->nsteps] = jumpsSoFar->to >> jumpModifiers[ODD][SOUTH_EAST][1];
+            jumpsSoFar->steps[jumpsSoFar->nsteps] = pos >> jumpModifiers[ODD][SOUTH_EAST][1];
             jumpsSoFar->to = jumpsSoFar->steps[jumpsSoFar->nsteps];
-            toggle_jump(jumpsSoFar->steps[jumpsSoFar->nsteps-1], jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
+            toggle_jump(pos, jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
             discover_odd_jumps(movelist, jumpsSoFar, self, other, jumpNorth, jumpSouth);
-            toggle_jump(jumpsSoFar->steps[jumpsSoFar->nsteps-1], jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
+            toggle_jump(pos, jumpsSoFar->steps[jumpsSoFar->nsteps], self, other);
         }
     }
 
