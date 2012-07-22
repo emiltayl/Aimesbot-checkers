@@ -10,7 +10,7 @@ board_t gamestate;
 unsigned long long nodesVisited;
 int whiteModifier;
 
-void printJump(move_t move) {
+void printJump(jump_t move) {
     int i;
 
     printf("Jump from 0x%08X to 0x%08X\n", move.from, move.to);
@@ -20,7 +20,7 @@ void printJump(move_t move) {
     }
 }
 
-void printJumps(movelist_t movelist) {
+void printJumps(jumplist_t movelist) {
     int i;
 
     printf("%d move(s):\n", movelist.moveCount);
@@ -61,12 +61,12 @@ int main(int argc, char **argv) {
 
     printf("Other heuristic: %d\n", -calculate_heuristics(0));
 
-    movelist_t selfMoves = get_self_jumps();
+    jumplist_t selfMoves = get_self_jumps();
     printJumps(selfMoves);
 
     assert(compareStates(gamestate, initialState));
 
-    movelist_t otherMoves = get_other_jumps();
+    jumplist_t otherMoves = get_other_jumps();
     printJumps(otherMoves);
 
     assert(compareStates(gamestate, initialState));

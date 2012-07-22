@@ -105,7 +105,7 @@ void toggle_jump(_board from, _board to, _board *self, _board *other) {
     }
 }
 
-void discover_even_jumps(movelist_t *movelist, move_t *jumpsSoFar, _board *self, _board *other, int jumpNorth, int jumpSouth) {
+void discover_even_jumps(jumplist_t *movelist, jump_t *jumpsSoFar, _board *self, _board *other, int jumpNorth, int jumpSouth) {
     int jumpDone = 0;
     _board pos = jumpsSoFar->to;
 
@@ -162,7 +162,7 @@ void discover_even_jumps(movelist_t *movelist, move_t *jumpsSoFar, _board *self,
     }
 }
 
-void discover_odd_jumps(movelist_t *movelist, move_t *jumpsSoFar, _board *self, _board *other, int jumpNorth, int jumpSouth) {
+void discover_odd_jumps(jumplist_t *movelist, jump_t *jumpsSoFar, _board *self, _board *other, int jumpNorth, int jumpSouth) {
     int jumpDone = 0;
     _board pos = jumpsSoFar->to;
 
@@ -219,13 +219,13 @@ void discover_odd_jumps(movelist_t *movelist, move_t *jumpsSoFar, _board *self, 
     }
 }
 
-movelist_t get_self_jumps() {
+jumplist_t get_self_jumps() {
     _board i = 0x80000000,
            n,
            selfKings = gamestate.self & gamestate.kings;
 
-    move_t jump;
-    movelist_t jumps;
+    jump_t jump;
+    jumplist_t jumps;
 
     jump.nsteps = 0;
     jumps.moveCount = 0;
@@ -289,13 +289,13 @@ movelist_t get_self_jumps() {
     return jumps;
 }
 
-movelist_t get_other_jumps() {
+jumplist_t get_other_jumps() {
     _board i = 0x80000000,
            n,
            otherKings = gamestate.other & gamestate.kings;
 
-    move_t jump;
-    movelist_t jumps;
+    jump_t jump;
+    jumplist_t jumps;
 
     jump.nsteps = 0;
     jumps.moveCount = 0;
