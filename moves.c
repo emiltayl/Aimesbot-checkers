@@ -222,7 +222,7 @@ void discover_odd_jumps(movelist_t *movelist, move_t *jumpsSoFar, _board *self, 
 movelist_t get_self_jumps() {
     _board i = 0x80000000,
            n,
-           selfKings = gamestate.self | gamestate.kings;
+           selfKings = gamestate.self & gamestate.kings;
 
     move_t jump;
     movelist_t jumps;
@@ -292,7 +292,7 @@ movelist_t get_self_jumps() {
 movelist_t get_other_jumps() {
     _board i = 0x80000000,
            n,
-           otherKings = gamestate.other | gamestate.kings;
+           otherKings = gamestate.other & gamestate.kings;
 
     move_t jump;
     movelist_t jumps;
