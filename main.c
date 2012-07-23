@@ -23,10 +23,10 @@ void printJump(jump_t move) {
 void printJumps(jumplist_t movelist) {
     int i;
 
-    printf("%d move(s):\n", movelist.moveCount);
+    printf("%d jump(s):\n", movelist.moveCount);
 
     for(i = 0; i < movelist.moveCount; i++) {
-        printf("Move #%d:\n", i);
+        printf("Jump #%d:\n", i);
         printJump(movelist.moves[i]);
     }
 }
@@ -38,9 +38,19 @@ int compareStates(board_t state1, board_t state2) {
         && state1.occupied == state2.occupied;
 }
 
+void printMoves(movelist_t movelist) {
+    int i;
+
+    printf("%d move(s):\n", movelist.moveCount);
+
+    for (i = 0; i < movelist.moveCount; i++) {
+        printf("Move #%d from 0x%08X to 0x%08X\n", i, movelist.from[i], movelist.to[i]);
+    }
+}
+
 int main(int argc, char **argv) {
     nodesVisited = 0;
-    gamestate = input2board("xxxxxx.xxx.x..o...o.ooooX.oooooo,O");
+    gamestate = input2board("xxxxxx.xxx.x......o.o.oox.oooooo,O");
 
     board_t initialState = gamestate;
 
@@ -61,13 +71,21 @@ int main(int argc, char **argv) {
 
     printf("Other heuristic: %d\n", -calculate_heuristics(0));
 
-    jumplist_t selfMoves = get_self_jumps();
-    printJumps(selfMoves);
+    jumplist_t selfJumps = get_self_jumps();
+    printJumps(selfJumps);
 
     assert(compareStates(gamestate, initialState));
 
-    jumplist_t otherMoves = get_other_jumps();
-    printJumps(otherMoves);
+    jumplist_t otherJumps = get_other_jumps();
+    printJumps(otherJumps);
+
+    assert(compareStates(gamestate, initialState));
+
+    movelist_t selfMoves = get_self_moves();
+    printMoves(selfMoves);
+
+    movelist_t otherMoves = get_other_moves();
+    printMoves(otherMoves);
 
     assert(compareStates(gamestate, initialState));
 

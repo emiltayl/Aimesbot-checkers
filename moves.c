@@ -358,3 +358,145 @@ jumplist_t get_other_jumps() {
 
     return jumps;
 }
+
+movelist_t get_self_moves() {
+    int odd;
+
+    movelist_t movelist;
+
+    _board board,
+           position,
+           selfKings = gamestate.self & gamestate.kings,
+           noccupied = ~gamestate.occupied;
+
+    movelist.moveCount = 0;
+
+    //North-east
+    board = ((0xF0F0F0F0 & gamestate.self) >> 4) & noccupied;
+    board |= ((0x07070700 & gamestate.self) >> 3) & noccupied;
+
+    while (board) {
+        position = 0x80000000 >> __builtin_clz(board);
+        odd = !(position & 0x0F0F0F0F);
+
+        movelist.to[movelist.moveCount] = position;
+        movelist.from[movelist.moveCount++] = position << (4 - odd);
+
+        board = board ^ position;
+    }
+
+    //North-west
+    board = ((0xE0E0E0E0 & gamestate.self) >> 5) & noccupied;
+    board |= ((0x0F0F0F00 & gamestate.self) >> 4) & noccupied;
+
+    while (board) {
+        position = 0x80000000 >> __builtin_clz(board);
+        odd = !(position & 0x0F0F0F0F);
+
+        movelist.to[movelist.moveCount] = position;
+        movelist.from[movelist.moveCount++] = position << (5 - odd);
+
+        board = board ^ position;
+    }
+
+    //South-east
+    board = ((0x00F0F0F0 & selfKings) << 4) & noccupied;
+    board |= ((0x07070707 & selfKings) << 5) & noccupied;
+
+    while (board) {
+        position = 0x80000000 >> __builtin_clz(board);
+        odd = !(position & 0x0F0F0F0F);
+
+        movelist.to[movelist.moveCount] = position;
+        movelist.from[movelist.moveCount++] = position >> (4 + odd);
+
+        board = board ^ position;
+    }
+
+    //South-west
+    board = ((0x00E0E0E0 & selfKings) << 3) & noccupied;
+    board |= ((0x0F0F0F0F & selfKings) << 4) & noccupied;
+
+    while (board) {
+        position = 0x80000000 >> __builtin_clz(board);
+        odd = !(position & 0x0F0F0F0F);
+
+        movelist.to[movelist.moveCount] = position;
+        movelist.from[movelist.moveCount++] = position >> (3 + odd);
+
+        board = board ^ position;
+    }
+
+    return movelist;
+}
+
+movelist_t get_other_moves() {
+    int odd;
+
+    movelist_t movelist;
+
+    _board board,
+           position,
+           otherKings = gamestate.other & gamestate.kings,
+           noccupied = ~gamestate.occupied;
+
+    movelist.moveCount = 0;
+
+    //North-east
+    board = ((0xF0F0F0F0 & otherKings) >> 4) & noccupied;
+    board |= ((0x07070700 & otherKings) >> 3) & noccupied;
+
+    while (board) {
+        position = 0x80000000 >> __builtin_clz(board);
+        odd = !(position & 0x0F0F0F0F);
+
+        movelist.to[movelist.moveCount] = position;
+        movelist.from[movelist.moveCount++] = position << (4 - odd);
+
+        board = board ^ position;
+    }
+
+    //North-west
+    board = ((0xE0E0E0E0 & otherKings) >> 5) & noccupied;
+    board |= ((0x0F0F0F00 & otherKings) >> 4) & noccupied;
+
+    while (board) {
+        position = 0x80000000 >> __builtin_clz(board);
+        odd = !(position & 0x0F0F0F0F);
+
+        movelist.to[movelist.moveCount] = position;
+        movelist.from[movelist.moveCount++] = position << (5 - odd);
+
+        board = board ^ position;
+    }
+
+    //South-east
+    board = ((0x00F0F0F0 & gamestate.other) << 4) & noccupied;
+    board |= ((0x07070707 & gamestate.other) << 5) & noccupied;
+
+    while (board) {
+        position = 0x80000000 >> __builtin_clz(board);
+        odd = !(position & 0x0F0F0F0F);
+
+        movelist.to[movelist.moveCount] = position;
+        movelist.from[movelist.moveCount++] = position >> (4 + odd);
+
+        board = board ^ position;
+    }
+
+    //South-west
+    board = ((0x00E0E0E0 & gamestate.other) << 3) & noccupied;
+    board |= ((0x0F0F0F0F & gamestate.other) << 4) & noccupied;
+
+    while (board) {
+        position = 0x80000000 >> __builtin_clz(board);
+        odd = !(position & 0x0F0F0F0F);
+
+        movelist.to[movelist.moveCount] = position;
+        movelist.from[movelist.moveCount++] = position >> (3 + odd);
+
+        board = board ^ position;
+    }
+
+    return movelist;
+}
