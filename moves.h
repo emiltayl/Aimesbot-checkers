@@ -39,8 +39,6 @@ jumplist_t get_self_jumps();
 jumplist_t get_other_jumps();
 movelist_t get_self_moves();
 movelist_t get_other_moves();
-void do_jumps(jumplist_t jump, _board *self, _board *other);
-void do_move(movelist_t move, _board *self, _board *other);
-void undo_jumps(jumplist_t jump, _board *self, _board *other);
-void undo_move(movelist_t move, _board *self, _board *other);
+void do_jumps(jump_t jump, _board *self, _board *other);
+void do_move(movelist_t move, int moveIndex, _board *self);
 #endif

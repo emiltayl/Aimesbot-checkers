@@ -500,3 +500,38 @@ movelist_t get_other_moves() {
 
     return movelist;
 }
+
+void do_jumps(jump_t jump, _board *self, _board *other) {
+    _board pos = 0;
+    int odd = !!(jump.from & 0x0F0F0F0F),
+        i,
+        west;
+
+    *self = *self ^ (jump.from | jump.to);
+    if (gamestate.kings & jump.from) {
+        gamestate.kings ^= jump.from | jump.to;
+    }
+
+    for (i = 1; i <= jump.nsteps; i++) {
+        if (jump.steps[i-1] > jump.steps[i]) {
+            west = (jump.steps[i-1] >> 7) > jump.steps[i];
+            pos |= jump.steps[i-1] >> jumpModifiers[odd][2 | west][0];
+        } else {
+            west = (jump.steps[i-1] << 7) == jump.steps[i];
+            pos |= jump.steps[i-1] << jumpModifiers[odd][west][0];
+        }
+    }
+    gamestate.kings = gamestate.kings & ~pos;
+    *other = *other ^ pos;
+
+    gamestate.occupied = *self | *other;
+}
+
+void do_move(movelist_t moves, int moveIndex, _board *self) {
+    *self = *self ^ (moves.from[moveIndex] | moves.to[moveIndex]);
+    if (gamestate.kings & moves.from[moveIndex]) {
+        gamestate.kings ^= moves.from[moveIndex] | moves.to[moveIndex];
+    }
+
+    gamestate.occupied ^= moves.from[moveIndex] | moves.to[moveIndex];
+}

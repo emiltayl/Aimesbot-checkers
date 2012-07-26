@@ -50,7 +50,7 @@ void printMoves(movelist_t movelist) {
 
 int main(int argc, char **argv) {
     nodesVisited = 0;
-    gamestate = input2board("xxxxxx.xxx.x......o.o.oox.oooooo,O");
+    gamestate = input2board("xxXxx..xxx.x....x.o.o.ooX.ooOooo,O");
 
     board_t initialState = gamestate;
 
@@ -88,6 +88,26 @@ int main(int argc, char **argv) {
     printMoves(otherMoves);
 
     assert(compareStates(gamestate, initialState));
+
+    do_jumps(selfJumps.moves[0], &gamestate.self, &gamestate.other);
+
+    printf
+        ("Self board: 0x%08X\nOther board: 0x%08X\nKings: 0x%08X\nOccupied: 0x%08X\n",
+         gamestate.self,
+         gamestate.other,
+         gamestate.kings,
+         gamestate.occupied
+        );
+
+    do_move(otherMoves, 10, &gamestate.other);
+
+    printf
+        ("Self board: 0x%08X\nOther board: 0x%08X\nKings: 0x%08X\nOccupied: 0x%08X\n",
+         gamestate.self,
+         gamestate.other,
+         gamestate.kings,
+         gamestate.occupied
+        );
 
     return EXIT_SUCCESS;
 }
