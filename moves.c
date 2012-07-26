@@ -507,6 +507,10 @@ void do_jumps(jump_t jump, _board *self, _board *other) {
         i,
         west;
 
+    if (!(gamestate.kings & jump.from) && (jump.to & 0xF000000F)) {
+        gamestate.kings |= jump.from;
+    }
+
     *self = *self ^ (jump.from | jump.to);
     if (gamestate.kings & jump.from) {
         gamestate.kings ^= jump.from | jump.to;
@@ -528,6 +532,10 @@ void do_jumps(jump_t jump, _board *self, _board *other) {
 }
 
 void do_move(movelist_t moves, int moveIndex, _board *self) {
+    if (!(gamestate.kings & moves.from[moveIndex]) && (moves.to[moveIndex] & 0xF000000F)) {
+        gamestate.kings |= moves.from[moveIndex];
+    }
+
     *self = *self ^ (moves.from[moveIndex] | moves.to[moveIndex]);
     if (gamestate.kings & moves.from[moveIndex]) {
         gamestate.kings ^= moves.from[moveIndex] | moves.to[moveIndex];
