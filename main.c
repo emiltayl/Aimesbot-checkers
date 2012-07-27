@@ -48,24 +48,79 @@ void printMoves(movelist_t movelist) {
     }
 }
 
+void printState(board_t state) {
+    int i = 0, n;
+    char pieces[] = {'o', 'x', 'O', 'X'};
+
+    printf("#========#\n");
+    while (i < 32) {
+        printf("|");
+        for (n = 0; n < 4; n++, i++) {
+            printf("\033[47m \033[0m\033[41m");
+            if (state.occupied & (1 << i)) {
+                if (state.kings & (1 << i)) {
+                    printf("\033[1m");
+                }
+
+                if (state.self & (1 << i)) {
+                    printf("\033[37m");
+                } else {
+                    printf("\033[30m");
+                }
+
+                printf("%c", pieces[(!!(state.other & (1 << i))) | ((!!(state.kings & (1 << i))) << 1)]);
+
+            } else {
+                if (state.kings & (1 << i)) {
+                    printf("E");
+                } else {
+                    printf(" ");
+                }
+            }
+            printf("\033[0m");
+        }
+
+        printf("|\n|");
+
+        for (n = 0; n < 4; n++, i++) {
+            printf("\033[41m");
+            if (state.occupied & (1 << i)) {
+                if (state.kings & (1 << i)) {
+                    printf("\033[1m");
+                }
+
+                if (state.self & (1 << i)) {
+                    printf("\033[37m");
+                } else {
+                    printf("\033[30m");
+                }
+
+                printf("%c", pieces[(!!(state.other & (1 << i))) | ((!!(state.kings & (1 << i))) << 1)]);
+
+            } else {
+                printf(" ");
+            }
+            printf("\033[47m \033[0m");
+        }
+
+        printf("|\n");
+    }
+    printf("#========#\n");
+}
+
 int main(int argc, char **argv) {
     nodesVisited = 0;
-    gamestate = input2board("xxXxx..xxx.x....x.o.o.ooX.ooOooo,O");
+    gamestate = input2board("xxXxx..xxx.x....x.o.o.ooX.oxOoo.,O");
 
     board_t initialState = gamestate;
 
-    printf
-        ("Self board: 0x%08X\nOther board: 0x%08X\nKings: 0x%08X\nOccupied: 0x%08X\n",
-         gamestate.self,
-         gamestate.other,
-         gamestate.kings,
-         gamestate.occupied
-        );
+    printState(gamestate);
 
     printf
-        ("Self pieces: %d\nOther Pieces: %d\nSelf heuristic: %d\n",
+        ("Self pieces: %d\nOther Pieces: %d\nKings: %d\nSelf heuristic: %d\n",
          population_count(gamestate.self),
          population_count(gamestate.other),
+         population_count(gamestate.kings),
          calculate_heuristics(0)
         );
 
@@ -91,23 +146,11 @@ int main(int argc, char **argv) {
 
     do_jumps(selfJumps.moves[0], &gamestate.self, &gamestate.other);
 
-    printf
-        ("Self board: 0x%08X\nOther board: 0x%08X\nKings: 0x%08X\nOccupied: 0x%08X\n",
-         gamestate.self,
-         gamestate.other,
-         gamestate.kings,
-         gamestate.occupied
-        );
+    printState(gamestate);
 
-    do_move(otherMoves, 10, &gamestate.other);
+    do_move(otherMoves, 6, &gamestate.other);
 
-    printf
-        ("Self board: 0x%08X\nOther board: 0x%08X\nKings: 0x%08X\nOccupied: 0x%08X\n",
-         gamestate.self,
-         gamestate.other,
-         gamestate.kings,
-         gamestate.occupied
-        );
+    printState(gamestate);
 
     return EXIT_SUCCESS;
 }
