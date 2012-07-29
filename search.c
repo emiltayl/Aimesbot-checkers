@@ -22,7 +22,7 @@ void *runSearch(void *ptr) {
     board_t oldState = gamestate;
     heuristic_t alpha = HEURISTIC_MIN, beta = HEURISTIC_MAX, bestHeuristic, tmp;
 
-    position_list = hash_table_create(15000000);
+    position_list = hash_table_create(1500000);
 
     jumpList = get_self_jumps();
     if (jumpList.moveCount) {
