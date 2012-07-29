@@ -3,7 +3,7 @@ CFLAGS  = -c -Wall -pipe -Wshadow
 LDFLAGS = -Wl,--gc-sections
 LIBS    = -lpthread
 
-SOURCES = main.c checkerboard.c heuristics.c moves.c search.c
+SOURCES = main.c checkerboard.c heuristics.c moves.c search.c hashtable.c
 OBJECTS = $(SOURCES:.c=.o)
 EXECUTABLE = aimesbot
 

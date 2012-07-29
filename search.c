@@ -3,6 +3,7 @@
 
 #include "checkerboard.h"
 #include "globals.h"
+#include "hashtable.h"
 #include "heuristics.h"
 #include "moves.h"
 #include "search.h"
@@ -12,12 +13,16 @@ _board *global_bestFrom = NULL;
 _board *global_bestTo   = NULL;
 int depthSearched = 0;
 
+hash_table_t *position_list;
+
 void *runSearch(void *ptr) {
     int i, n, bestMoveIndex = 0, newBestMoveIndex = 0;
     jumplist_t jumpList;
     movelist_t moveList;
     board_t oldState = gamestate;
     heuristic_t alpha = HEURISTIC_MIN, beta = HEURISTIC_MAX, bestHeuristic, tmp;
+
+    position_list = hash_table_create(15000000);
 
     jumpList = get_self_jumps();
     if (jumpList.moveCount) {
@@ -86,10 +91,12 @@ void *runSearch(void *ptr) {
 }
 
 heuristic_t alphaSearch(int depth, int alpha, int beta) {
-    int i, tmp;
+    int i;
     jumplist_t jumpList;
     movelist_t moveList;
     board_t oldState = gamestate;
+
+    heuristic_t tmp;
 
     nodesVisited++;
 
@@ -97,8 +104,15 @@ heuristic_t alphaSearch(int depth, int alpha, int beta) {
     if (jumpList.moveCount) {
         for (i = 0; i < jumpList.moveCount; i++) {
             do_jumps(jumpList.moves[i], &gamestate.self, &gamestate.other);
-            tmp = betaSearch(depth - 1, alpha, beta);
-            alpha = (alpha < tmp) ? tmp : alpha;
+
+            if (!hash_table_get_gamestate(position_list, HASH_TABLE_SELF_TURN | depthSearched, &tmp)) {
+                tmp = betaSearch(depth - 1, alpha, beta);
+                alpha = (alpha < tmp) ? tmp : alpha;
+                hash_table_add_gamestate(position_list, HASH_TABLE_SELF_TURN | depthSearched, alpha);
+            } else {
+                alpha = (alpha < tmp) ? tmp : alpha;
+            }
+
             gamestate = oldState;
 
             if (alpha >= beta) {
@@ -121,8 +135,15 @@ heuristic_t alphaSearch(int depth, int alpha, int beta) {
 
     for (i = 0; i < moveList.moveCount; i++) {
         do_move(moveList, i, &gamestate.self);
-        tmp = betaSearch(depth - 1, alpha, beta);
-        alpha = (alpha < tmp) ? tmp : alpha;
+
+        if (!hash_table_get_gamestate(position_list, HASH_TABLE_SELF_TURN | depthSearched, &tmp)) {
+            tmp = betaSearch(depth - 1, alpha, beta);
+            alpha = (alpha < tmp) ? tmp : alpha;
+            hash_table_add_gamestate(position_list, HASH_TABLE_SELF_TURN | depthSearched, alpha);
+        } else {
+            alpha = (alpha < tmp) ? tmp : alpha;
+        }
+
         gamestate = oldState;
 
         if (alpha >= beta) {
@@ -134,10 +155,12 @@ heuristic_t alphaSearch(int depth, int alpha, int beta) {
 }
 
 heuristic_t betaSearch(int depth, int alpha, int beta) {
-    int i, tmp;
+    int i;
     jumplist_t jumpList;
     movelist_t moveList;
     board_t oldState = gamestate;
+
+    heuristic_t tmp;
 
     nodesVisited++;
 
@@ -145,8 +168,15 @@ heuristic_t betaSearch(int depth, int alpha, int beta) {
     if (jumpList.moveCount) {
         for (i = 0; i < jumpList.moveCount; i++) {
             do_jumps(jumpList.moves[i], &gamestate.other, &gamestate.self);
-            tmp = alphaSearch(depth - 1, alpha, beta);
-            beta = (beta > tmp) ? tmp : beta;
+
+            if (!hash_table_get_gamestate(position_list, depthSearched, &tmp)) {
+                tmp = alphaSearch(depth - 1, alpha, beta);
+                beta = (beta > tmp) ? tmp : beta;
+                hash_table_add_gamestate(position_list, depthSearched, beta);
+            } else {
+                beta = (beta > tmp) ? tmp : beta;
+            }
+
             gamestate = oldState;
 
             if (alpha >= beta) {
@@ -169,8 +199,15 @@ heuristic_t betaSearch(int depth, int alpha, int beta) {
 
     for (i = 0; i < moveList.moveCount; i++) {
         do_move(moveList, i, &gamestate.other);
-        tmp = alphaSearch(depth - 1, alpha, beta);
-        beta = (beta > tmp) ? tmp : beta;
+
+        if (!hash_table_get_gamestate(position_list, depthSearched, &tmp)) {
+            tmp = alphaSearch(depth - 1, alpha, beta);
+            beta = (beta > tmp) ? tmp : beta;
+            hash_table_add_gamestate(position_list, depthSearched, beta);
+        } else {
+            beta = (beta > tmp) ? tmp : beta;
+        }
+
         gamestate = oldState;
 
         if (alpha >= beta) {
