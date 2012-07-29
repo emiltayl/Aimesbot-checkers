@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
     struct timespec sleepTime, remaining;
 
     sleepTime.tv_sec = 9;
-    sleepTime.tv_nsec = 990000000;
+    sleepTime.tv_nsec = 985000000;
 
     pthread_create(&thread, NULL, runSearch, NULL);
 
