@@ -1,5 +1,7 @@
+#include <pthread.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 
 #include "checkerboard.h"
 #include "heuristics.h"
@@ -8,6 +10,7 @@
 
 board_t gamestate;
 unsigned long long nodesVisited = 0;
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void printJump(jump_t jump, int isWhite) {
     int i;
@@ -39,8 +42,18 @@ int main(int argc, char **argv) {
     nodesVisited = 0;
     gamestate = input2board(argv[1]);
 
-    runSearch();
+    pthread_t thread;
 
+    struct timespec sleepTime, remaining;
+
+    sleepTime.tv_sec = 9;
+    sleepTime.tv_nsec = 990000000;
+
+    pthread_create(&thread, NULL, runSearch, NULL);
+
+    nanosleep(&sleepTime, &remaining);
+
+    pthread_mutex_lock(&mutex);
     if (global_bestJump != NULL) {
         printJump(*global_bestJump, argv[1][33] == 'O');
     } else {
@@ -48,6 +61,8 @@ int main(int argc, char **argv) {
     }
 
     printf("\n%u nodes visited\n", nodesVisited);
+    printf("%d depth reached\n", depthSearched);
+    pthread_mutex_unlock(&mutex);
 
     return EXIT_SUCCESS;
 }

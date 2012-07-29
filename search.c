@@ -1,3 +1,4 @@
+#include <pthread.h>
 #include <stdlib.h>
 
 #include "checkerboard.h"
@@ -9,8 +10,9 @@
 jump_t *global_bestJump = NULL;
 _board *global_bestFrom = NULL;
 _board *global_bestTo   = NULL;
+int depthSearched = 0;
 
-void runSearch() {
+void *runSearch(void *ptr) {
     int i, n, bestMoveIndex = 0, newBestMoveIndex = 0;
     jumplist_t jumpList;
     movelist_t moveList;
@@ -19,7 +21,7 @@ void runSearch() {
 
     jumpList = get_self_jumps();
     if (jumpList.moveCount) {
-        for (n = 3; n < 13; n++) {
+        for (n = 3; n < 20; n++) {
             do_jumps(jumpList.moves[bestMoveIndex], &gamestate.self, &gamestate.other);
             bestHeuristic = betaSearch(n, alpha, beta);
             gamestate = oldState;
@@ -38,17 +40,20 @@ void runSearch() {
                 gamestate = oldState;
             }
 
+            pthread_mutex_lock(&mutex);
             bestMoveIndex = newBestMoveIndex;
             global_bestJump = &jumpList.moves[bestMoveIndex];
+            depthSearched = n;
+            pthread_mutex_unlock(&mutex);
             alpha = bestHeuristic - 500;
             beta = bestHeuristic + 500;
         }
 
-        return;
+        return NULL;
     }
 
     moveList = get_self_moves();
-    for (n = 3; n < 13; n++) {
+    for (n = 3; n < 20; n++) {
         do_move(moveList, bestMoveIndex, &gamestate.self);
         bestHeuristic = betaSearch(n, alpha, beta);
         gamestate = oldState;
@@ -67,12 +72,17 @@ void runSearch() {
             gamestate = oldState;
         }
 
+        pthread_mutex_lock(&mutex);
         bestMoveIndex = newBestMoveIndex;
         global_bestFrom = &moveList.from[bestMoveIndex];
         global_bestTo = &moveList.to[bestMoveIndex];
+        depthSearched = n;
+        pthread_mutex_unlock(&mutex);
         alpha = bestHeuristic - 500;
         beta = bestHeuristic + 500;
     }
+
+    return NULL;
 }
 
 heuristic_t alphaSearch(int depth, int alpha, int beta) {

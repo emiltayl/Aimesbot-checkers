@@ -1,7 +1,7 @@
 CC 	    = gcc
 CFLAGS  = -c -Wall -pipe -Wshadow
 LDFLAGS = -Wl,--gc-sections
-LIBS    =
+LIBS    = -lpthread
 
 SOURCES = main.c checkerboard.c heuristics.c moves.c search.c
 OBJECTS = $(SOURCES:.c=.o)
