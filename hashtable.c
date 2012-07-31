@@ -227,7 +227,7 @@ hash_table_t *hash_table_create(int size) {
     return hash_table;
 }
 
-int hash_table_get_gamestate(hash_table_t *hash_table, int turnState, heuristic_t *scoreVar) {
+hash_table_list_t *hash_table_get_gamestate(hash_table_t *hash_table, int playerMask) {
     unsigned int position = hash_table_get_gamestate_position(hash_table, gamestate);
     hash_table_list_t *list = hash_table->elements[position];
 
@@ -235,17 +235,16 @@ int hash_table_get_gamestate(hash_table_t *hash_table, int turnState, heuristic_
         if (list->board.self == gamestate.self
             && list->board.other == gamestate.other
             && list->board.kings == gamestate.kings
-            && list->turnState == turnState) {
-            *scoreVar = list->score;
-            return 1;
+            && (list->turnState & HASH_TABLE_SELF_TURN) == (playerMask & HASH_TABLE_SELF_TURN)) {
+            return list;
         }
         list = list->next;
     }
 
-    return 0;
+    return NULL;
 }
 
-void hash_table_add_gamestate(hash_table_t *hash_table, int turnState, heuristic_t score) {
+void hash_table_add_gamestate(hash_table_t *hash_table, int turnState, int bestMove, heuristic_t score) {
     unsigned int position = hash_table_get_gamestate_position(hash_table, gamestate);
     hash_table_list_t *new_element = (hash_table_list_t *) malloc(sizeof(hash_table_list_t));
     if (new_element == NULL) {
@@ -254,6 +253,7 @@ void hash_table_add_gamestate(hash_table_t *hash_table, int turnState, heuristic
 
     new_element->board = gamestate;
     new_element->turnState = turnState;
+    new_element->bestMove = bestMove;
     new_element->score = score;
     new_element->next = NULL;
 

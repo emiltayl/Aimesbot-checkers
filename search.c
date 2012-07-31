@@ -91,26 +91,48 @@ void *runSearch(void *ptr) {
 }
 
 heuristic_t alphaSearch(int depth, int alpha, int beta) {
-    int i;
+    int i, bestMove = 0;
     jumplist_t jumpList;
     movelist_t moveList;
     board_t oldState = gamestate;
+    hash_table_list_t *listPtr;
 
     heuristic_t tmp;
 
     nodesVisited++;
 
+    listPtr = hash_table_get_gamestate(position_list, HASH_TABLE_SELF_TURN);
+    if (listPtr != NULL) {
+        if (depth <= (listPtr->turnState & ~HASH_TABLE_SELF_TURN)) {
+            return listPtr->score;
+        }
+
+        bestMove = listPtr->bestMove;
+    }
+
     jumpList = get_self_jumps();
     if (jumpList.moveCount) {
+        do_jumps(jumpList.moves[bestMove], &gamestate.self, &gamestate.other);
+        tmp = betaSearch(depth - 1, alpha, beta);
+        alpha = (alpha < tmp) ? tmp : alpha;
+        gamestate = oldState;
+
+        if (alpha >= beta) {
+            goto alphaAfterJumpSearch;
+        }
+
         for (i = 0; i < jumpList.moveCount; i++) {
+            if (listPtr != NULL && i == listPtr->bestMove) {
+                continue;
+            }
+
             do_jumps(jumpList.moves[i], &gamestate.self, &gamestate.other);
 
-            if (!hash_table_get_gamestate(position_list, HASH_TABLE_SELF_TURN | depthSearched, &tmp)) {
-                tmp = betaSearch(depth - 1, alpha, beta);
-                alpha = (alpha < tmp) ? tmp : alpha;
-                hash_table_add_gamestate(position_list, HASH_TABLE_SELF_TURN | depthSearched, alpha);
-            } else {
-                alpha = (alpha < tmp) ? tmp : alpha;
+            tmp = betaSearch(depth - 1, alpha, beta);
+
+            if (alpha < tmp) {
+                alpha = tmp;
+                bestMove = i;
             }
 
             gamestate = oldState;
@@ -118,6 +140,15 @@ heuristic_t alphaSearch(int depth, int alpha, int beta) {
             if (alpha >= beta) {
                 break;
             }
+        }
+        alphaAfterJumpSearch:
+
+        if (listPtr != NULL) {
+            listPtr->turnState = HASH_TABLE_SELF_MASK | (depth > 0 ? depth : 0);
+            listPtr->bestMove = bestMove;
+            listPtr->score = alpha;
+        } else {
+            hash_table_add_gamestate(position_list, HASH_TABLE_SELF_MASK | (depth > 0 ? depth : 0), bestMove, alpha);
         }
 
         return alpha;
@@ -130,51 +161,91 @@ heuristic_t alphaSearch(int depth, int alpha, int beta) {
     moveList = get_self_moves();
 
     if (moveList.moveCount == 0) {
-        return HEURISTIC_MIN;
+        return HEURISTIC_LOSS - calculate_heuristics(1);
+    }
+
+    do_move(moveList, bestMove, &gamestate.self);
+    tmp = betaSearch(depth - 1, alpha, beta);
+
+    alpha = (alpha < tmp) ? tmp : alpha;
+    gamestate = oldState;
+    if (alpha >= beta) {
+        goto alphaAfterMoveSearch;
     }
 
     for (i = 0; i < moveList.moveCount; i++) {
+        if (listPtr != NULL && i == listPtr->bestMove) {
+            continue;
+        }
         do_move(moveList, i, &gamestate.self);
 
-        if (!hash_table_get_gamestate(position_list, HASH_TABLE_SELF_TURN | depthSearched, &tmp)) {
-            tmp = betaSearch(depth - 1, alpha, beta);
-            alpha = (alpha < tmp) ? tmp : alpha;
-            hash_table_add_gamestate(position_list, HASH_TABLE_SELF_TURN | depthSearched, alpha);
-        } else {
-            alpha = (alpha < tmp) ? tmp : alpha;
+        tmp = betaSearch(depth - 1, alpha, beta);
+        if (alpha < tmp) {
+            alpha = tmp;
+            bestMove = i;
         }
-
         gamestate = oldState;
 
         if (alpha >= beta) {
             break;
         }
     }
+    alphaAfterMoveSearch:
+
+    if (listPtr != NULL) {
+        listPtr->turnState = HASH_TABLE_SELF_MASK | (depth > 0 ? depth : 0);
+        listPtr->bestMove = bestMove;
+        listPtr->score = alpha;
+    } else {
+        hash_table_add_gamestate(position_list, HASH_TABLE_SELF_MASK | (depth > 0 ? depth : 0), bestMove, alpha);
+    }
 
     return alpha;
 }
 
 heuristic_t betaSearch(int depth, int alpha, int beta) {
-    int i;
+    int i, bestMove = 0;
     jumplist_t jumpList;
     movelist_t moveList;
     board_t oldState = gamestate;
+    hash_table_list_t *listPtr;
 
     heuristic_t tmp;
 
     nodesVisited++;
 
+    listPtr = hash_table_get_gamestate(position_list, 0);
+    if (listPtr != NULL) {
+        if (depth <= listPtr->turnState) {
+            return listPtr->score;
+        }
+
+        bestMove = listPtr->bestMove;
+    }
+
     jumpList = get_other_jumps();
     if (jumpList.moveCount) {
+        do_jumps(jumpList.moves[bestMove], &gamestate.other, &gamestate.self);
+        tmp = alphaSearch(depth - 1, alpha, beta);
+        beta = (beta > tmp) ? tmp : beta;
+        gamestate = oldState;
+
+        if (alpha >= beta) {
+            goto betaAfterJumpSearch;
+        }
+
         for (i = 0; i < jumpList.moveCount; i++) {
+            if (listPtr != NULL && i == listPtr->bestMove) {
+                continue;
+            }
+
             do_jumps(jumpList.moves[i], &gamestate.other, &gamestate.self);
 
-            if (!hash_table_get_gamestate(position_list, depthSearched, &tmp)) {
-                tmp = alphaSearch(depth - 1, alpha, beta);
-                beta = (beta > tmp) ? tmp : beta;
-                hash_table_add_gamestate(position_list, depthSearched, beta);
-            } else {
-                beta = (beta > tmp) ? tmp : beta;
+            tmp = alphaSearch(depth - 1, alpha, beta);
+
+            if (beta > tmp) {
+                beta = tmp;
+                bestMove = i;
             }
 
             gamestate = oldState;
@@ -182,6 +253,15 @@ heuristic_t betaSearch(int depth, int alpha, int beta) {
             if (alpha >= beta) {
                 break;
             }
+        }
+        betaAfterJumpSearch:
+
+        if (listPtr != NULL) {
+            listPtr->turnState = (depth > 0 ? depth : 0);
+            listPtr->bestMove = bestMove;
+            listPtr->score = beta;
+        } else {
+            hash_table_add_gamestate(position_list, (depth > 0 ? depth : 0), bestMove, beta);
         }
 
         return beta;
@@ -194,25 +274,43 @@ heuristic_t betaSearch(int depth, int alpha, int beta) {
     moveList = get_other_moves();
 
     if (moveList.moveCount == 0) {
-        return HEURISTIC_MAX;
+        return HEURISTIC_WIN + calculate_heuristics(0);
+    }
+
+    do_move(moveList, bestMove, &gamestate.other);
+    tmp = alphaSearch(depth - 1, alpha, beta);
+
+    beta = (beta > tmp) ? tmp : beta;
+    gamestate = oldState;
+    if (alpha >= beta) {
+        goto betaAfterMoveSearch;
     }
 
     for (i = 0; i < moveList.moveCount; i++) {
+        if (listPtr != NULL && i == listPtr->bestMove) {
+            continue;
+        }
         do_move(moveList, i, &gamestate.other);
 
-        if (!hash_table_get_gamestate(position_list, depthSearched, &tmp)) {
-            tmp = alphaSearch(depth - 1, alpha, beta);
-            beta = (beta > tmp) ? tmp : beta;
-            hash_table_add_gamestate(position_list, depthSearched, beta);
-        } else {
-            beta = (beta > tmp) ? tmp : beta;
+        tmp = alphaSearch(depth - 1, alpha, beta);
+        if (beta > tmp) {
+            beta = tmp;
+            bestMove = i;
         }
-
         gamestate = oldState;
 
         if (alpha >= beta) {
             break;
         }
+    }
+    betaAfterMoveSearch:
+
+    if (listPtr != NULL) {
+        listPtr->turnState = (depth > 0 ? depth : 0);
+        listPtr->bestMove = bestMove;
+        listPtr->score = beta;
+    } else {
+        hash_table_add_gamestate(position_list, (depth > 0 ? depth : 0), bestMove, beta);
     }
 
     return beta;
