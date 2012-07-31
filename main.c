@@ -39,7 +39,6 @@ void printMove(_board from, _board to, int isWhite) {
 }
 
 int main(int argc, char **argv) {
-    nodesVisited = 0;
     gamestate = input2board(argv[1]);
 
     pthread_t thread;
@@ -47,7 +46,7 @@ int main(int argc, char **argv) {
     struct timespec sleepTime, remaining;
 
     sleepTime.tv_sec = 9;
-    sleepTime.tv_nsec = 985000000;
+    sleepTime.tv_nsec = 850000000;
 
     pthread_create(&thread, NULL, runSearch, NULL);
 
