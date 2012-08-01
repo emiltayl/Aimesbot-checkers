@@ -52,8 +52,8 @@ void *runSearch(void *ptr) {
                 continue;
             }
 
-            pthread_mutex_lock(&mutex);
             bestMoveIndex = newBestMoveIndex;
+            pthread_mutex_lock(&mutex);
             global_bestJump = &jumpList.moves[bestMoveIndex];
             depthSearched = n;
             pthread_mutex_unlock(&mutex);
@@ -91,8 +91,8 @@ void *runSearch(void *ptr) {
             continue;
         }
 
-        pthread_mutex_lock(&mutex);
         bestMoveIndex = newBestMoveIndex;
+        pthread_mutex_lock(&mutex);
         global_bestFrom = &moveList.from[bestMoveIndex];
         global_bestTo = &moveList.to[bestMoveIndex];
         depthSearched = n;
@@ -175,7 +175,7 @@ heuristic_t alphaSearch(int depth, int alpha, int beta) {
     moveList = get_self_moves();
 
     if (moveList.moveCount == 0) {
-        return HEURISTIC_LOSS + calculate_heuristics(1);
+        return HEURISTIC_LOSS + calculate_heuristics(1) - depth;
     }
 
     do_move(moveList, bestMove, &gamestate.self);
@@ -288,7 +288,7 @@ heuristic_t betaSearch(int depth, int alpha, int beta) {
     moveList = get_other_moves();
 
     if (moveList.moveCount == 0) {
-        return HEURISTIC_WIN + calculate_heuristics(0);
+        return HEURISTIC_WIN + calculate_heuristics(0) + depth;
     }
 
     do_move(moveList, bestMove, &gamestate.other);
