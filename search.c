@@ -36,7 +36,7 @@ void *runSearch(void *ptr) {
                     continue;
                 }
 
-                do_jumps(jumpList.moves[bestMoveIndex], &gamestate.self, &gamestate.other);
+                do_jumps(jumpList.moves[i], &gamestate.self, &gamestate.other);
                 tmp = betaSearch(n, bestHeuristic, beta);
                 if (tmp > bestHeuristic) {
                     bestHeuristic = tmp;
