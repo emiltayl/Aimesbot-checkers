@@ -26,7 +26,7 @@ void *runSearch(void *ptr) {
 
     jumpList = get_self_jumps();
     if (jumpList.moveCount) {
-        for (n = 3; n; n++) {
+        for (n = 2; n; n++) {
             do_jumps(jumpList.moves[bestMoveIndex], &gamestate.self, &gamestate.other);
             bestHeuristic = betaSearch(n, alpha, beta);
             gamestate = oldState;
@@ -37,7 +37,7 @@ void *runSearch(void *ptr) {
                 }
 
                 do_jumps(jumpList.moves[bestMoveIndex], &gamestate.self, &gamestate.other);
-                tmp = betaSearch(n, alpha, beta);
+                tmp = betaSearch(n, bestHeuristic, beta);
                 if (tmp > bestHeuristic) {
                     bestHeuristic = tmp;
                     newBestMoveIndex = i;
@@ -65,7 +65,7 @@ void *runSearch(void *ptr) {
     }
 
     moveList = get_self_moves();
-    for (n = 3; n; n++) {
+    for (n = 2; n; n++) {
         do_move(moveList, bestMoveIndex, &gamestate.self);
         bestHeuristic = betaSearch(n, alpha, beta);
         gamestate = oldState;
@@ -76,12 +76,19 @@ void *runSearch(void *ptr) {
             }
 
             do_move(moveList, i, &gamestate.self);
-            tmp = betaSearch(n, alpha, beta);
+            tmp = betaSearch(n, bestHeuristic, beta);
             if (tmp > bestHeuristic) {
                 bestHeuristic = tmp;
                 newBestMoveIndex = i;
             }
             gamestate = oldState;
+        }
+
+        if (bestHeuristic <= alpha || bestHeuristic >= beta) {
+            alpha = HEURISTIC_MIN;
+            beta = HEURISTIC_MAX;
+            n--;
+            continue;
         }
 
         pthread_mutex_lock(&mutex);
@@ -90,8 +97,8 @@ void *runSearch(void *ptr) {
         global_bestTo = &moveList.to[bestMoveIndex];
         depthSearched = n;
         pthread_mutex_unlock(&mutex);
-        alpha = bestHeuristic - 500;
-        beta = bestHeuristic + 500;
+        alpha = bestHeuristic - 250;
+        beta = bestHeuristic + 250;
     }
 
     return NULL;
@@ -168,7 +175,7 @@ heuristic_t alphaSearch(int depth, int alpha, int beta) {
     moveList = get_self_moves();
 
     if (moveList.moveCount == 0) {
-        return HEURISTIC_LOSS - calculate_heuristics(1);
+        return HEURISTIC_LOSS + calculate_heuristics(1);
     }
 
     do_move(moveList, bestMove, &gamestate.self);
