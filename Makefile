@@ -15,6 +15,11 @@ else
 	STRIP = strip --strip-all $(EXECUTABLE)
 endif
 
+ifeq ($(PRODUCTION),y)
+	CFLAGS += -m32 -march=pentium4 -mtune=pentium4
+	LDFLAGS += -m32
+endif
+
 all: $(SOURCES) $(EXECUTABLE)
 	$(STRIP)
 

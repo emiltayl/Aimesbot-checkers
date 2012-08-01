@@ -10,7 +10,7 @@
 #define POSITION_IS_KING(board, x) GET_BIT(board.kings, x)
 #define POSITION_IS_TAKEN(board, x) POSITION_IS_WHITE(board, x) || POSITION_IS_BLACK(board, x)
 
-typedef uint_fast32_t _board;
+typedef uint32_t _board;
 
 typedef struct board_struct {
     _board other;
