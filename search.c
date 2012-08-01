@@ -26,7 +26,7 @@ void *runSearch(void *ptr) {
 
     jumpList = get_self_jumps();
     if (jumpList.moveCount) {
-        for (n = 2; n; n++) {
+        for (n = 0;; n++) {
             do_jumps(jumpList.moves[bestMoveIndex], &gamestate.self, &gamestate.other);
             bestHeuristic = betaSearch(n, alpha, beta);
             gamestate = oldState;
@@ -65,7 +65,7 @@ void *runSearch(void *ptr) {
     }
 
     moveList = get_self_moves();
-    for (n = 2; n; n++) {
+    for (n = 0;; n++) {
         do_move(moveList, bestMoveIndex, &gamestate.self);
         bestHeuristic = betaSearch(n, alpha, beta);
         gamestate = oldState;
