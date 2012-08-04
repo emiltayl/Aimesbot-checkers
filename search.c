@@ -26,7 +26,8 @@ void *runSearch(void *ptr) {
 
     jumpList = get_self_jumps();
     if (jumpList.moveCount) {
-        for (n = 0;; n++) {
+        n = 0;
+        while(1) {
             do_jumps(jumpList.moves[bestMoveIndex], &gamestate.self, &gamestate.other);
             bestHeuristic = betaSearch(n, alpha, beta);
             gamestate = oldState;
@@ -48,7 +49,6 @@ void *runSearch(void *ptr) {
             if (bestHeuristic <= alpha || bestHeuristic >= beta) {
                 alpha = HEURISTIC_MIN;
                 beta = HEURISTIC_MAX;
-                n--;
                 continue;
             }
 
@@ -59,13 +59,15 @@ void *runSearch(void *ptr) {
             pthread_mutex_unlock(&mutex);
             alpha = bestHeuristic - 250;
             beta = bestHeuristic + 250;
+            n++;
         }
 
         return NULL;
     }
 
     moveList = get_self_moves();
-    for (n = 0;; n++) {
+    n = 0;
+    while (1) {
         do_move(moveList, bestMoveIndex, &gamestate.self);
         bestHeuristic = betaSearch(n, alpha, beta);
         gamestate = oldState;
@@ -87,7 +89,6 @@ void *runSearch(void *ptr) {
         if (bestHeuristic <= alpha || bestHeuristic >= beta) {
             alpha = HEURISTIC_MIN;
             beta = HEURISTIC_MAX;
-            n--;
             continue;
         }
 
@@ -99,6 +100,7 @@ void *runSearch(void *ptr) {
         pthread_mutex_unlock(&mutex);
         alpha = bestHeuristic - 250;
         beta = bestHeuristic + 250;
+        n++;
     }
 
     return NULL;
