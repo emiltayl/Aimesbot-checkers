@@ -160,11 +160,11 @@ heuristic_t alphaSearch(int depth, int alpha, int beta) {
         alphaAfterJumpSearch:
 
         if (listPtr != NULL) {
-            listPtr->turnState = HASH_TABLE_SELF_MASK | (depth > 0 ? depth : 0);
+            listPtr->turnState = HASH_TABLE_SELF_TURN | (depth > 0 ? depth : 0);
             listPtr->bestMove = bestMove;
             listPtr->score = alpha;
         } else {
-            hash_table_add_gamestate(position_list, HASH_TABLE_SELF_MASK | (depth > 0 ? depth : 0), bestMove, alpha);
+            hash_table_add_gamestate(position_list, HASH_TABLE_SELF_TURN | (depth > 0 ? depth : 0), bestMove, alpha);
         }
 
         return alpha;
@@ -209,11 +209,11 @@ heuristic_t alphaSearch(int depth, int alpha, int beta) {
     alphaAfterMoveSearch:
 
     if (listPtr != NULL) {
-        listPtr->turnState = HASH_TABLE_SELF_MASK | (depth > 0 ? depth : 0);
+        listPtr->turnState = HASH_TABLE_SELF_TURN | (depth > 0 ? depth : 0);
         listPtr->bestMove = bestMove;
         listPtr->score = alpha;
     } else {
-        hash_table_add_gamestate(position_list, HASH_TABLE_SELF_MASK | (depth > 0 ? depth : 0), bestMove, alpha);
+        hash_table_add_gamestate(position_list, HASH_TABLE_SELF_TURN | (depth > 0 ? depth : 0), bestMove, alpha);
     }
 
     return alpha;
