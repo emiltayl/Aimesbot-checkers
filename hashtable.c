@@ -300,18 +300,3 @@ void hash_table_add_gamestate(hash_table_t *hash_table, int turnState, int bestM
 
     return;
 }
-
-void hash_table_free(hash_table_t *hash_table) {
-    int i;
-    hash_table_list_t *list_item, *next;
-    for (i = 0; i < hash_table->size; i++) {
-        list_item = hash_table->elements[i];
-        while (list_item != NULL) {
-            next = list_item->next;
-            free(list_item);
-            list_item = next;
-        }
-    }
-    free(hash_table->elements);
-    free(hash_table);
-}

@@ -29,6 +29,5 @@ unsigned int hash_table_get_gamestate_position(hash_table_t *, board_t);
 hash_table_t *hash_table_create(int);
 hash_table_list_t *hash_table_get_gamestate(hash_table_t *, int);
 void hash_table_add_gamestate(hash_table_t *, int, int, heuristic_t);
-void hash_table_free(hash_table_t *);
 
 #endif /*HASHTABLE_H_*/
