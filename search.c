@@ -106,7 +106,7 @@ void *runSearch(void *ptr) {
     return NULL;
 }
 
-heuristic_t alphaSearch(int depth, int alpha, int beta) {
+heuristic_t alphaSearch(int depth, heuristic_t alpha, heuristic_t beta) {
     int i, bestMove = 0;
     jumplist_t jumpList;
     movelist_t moveList;
@@ -219,7 +219,7 @@ heuristic_t alphaSearch(int depth, int alpha, int beta) {
     return alpha;
 }
 
-heuristic_t betaSearch(int depth, int alpha, int beta) {
+heuristic_t betaSearch(int depth, heuristic_t alpha, heuristic_t beta) {
     int i, bestMove = 0;
     jumplist_t jumpList;
     movelist_t moveList;

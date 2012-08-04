@@ -11,7 +11,7 @@ extern _board *global_bestTo;
 extern int depthSearched;
 
 void *runSearch(void *ptr);
-heuristic_t alphaSearch(int depth, int alpha, int beta);
-heuristic_t betaSearch(int depth, int alpha, int beta);
+heuristic_t alphaSearch(int depth, heuristic_t alpha, heuristic_t beta);
+heuristic_t betaSearch(int depth, heuristic_t alpha, heuristic_t beta);
 
 #endif
