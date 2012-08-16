@@ -1,4 +1,5 @@
 #include <pthread.h>
+#include <signal.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
@@ -53,6 +54,8 @@ int main(int argc, char **argv) {
     nanosleep(&sleepTime, &remaining);
 
     pthread_mutex_lock(&mutex);
+    pthread_kill(thread, SIGSTOP);
+
     if (global_bestJump != NULL) {
         printJump(*global_bestJump, argv[1][33] == 'O');
     } else {
@@ -61,7 +64,6 @@ int main(int argc, char **argv) {
 
     printf("\n%u nodes visited\n", nodesVisited);
     printf("%d depth reached\n", depthSearched);
-    pthread_mutex_unlock(&mutex);
 
     return EXIT_SUCCESS;
 }
