@@ -57,8 +57,8 @@ void *runSearch(void *ptr) {
             global_bestJump = &jumpList.moves[bestMoveIndex];
             depthSearched = n;
             pthread_mutex_unlock(&mutex);
-            alpha = bestHeuristic - 250;
-            beta = bestHeuristic + 250;
+            alpha = bestHeuristic - 150;
+            beta = bestHeuristic + 150;
             n++;
         }
 
@@ -98,8 +98,8 @@ void *runSearch(void *ptr) {
         global_bestTo = &moveList.to[bestMoveIndex];
         depthSearched = n;
         pthread_mutex_unlock(&mutex);
-        alpha = bestHeuristic - 250;
-        beta = bestHeuristic + 250;
+        alpha = bestHeuristic - 150;
+        beta = bestHeuristic + 150;
         n++;
     }
 
