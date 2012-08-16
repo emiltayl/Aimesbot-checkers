@@ -7,10 +7,12 @@
 #define HASH_TABLE_GROW_SIZE 0.75
 
 #define HASH_TABLE_SELF_TURN (1 << 31)
+#define HASH_TABLE_ALPHA_CUTOFF (1 << 30)
+#define HASH_TABLE_BETA_CUTOFF (1 << 29)
 
 typedef struct _hash_table_list {
     board_t board;
-    int turnState; //1 << 31 is set if it it's self's turn + depth left
+    int turnState; //1 << 31 is set if it it's self's turn + 1 << 30 if the score is a alpha cutoff + depth left, 1 << 29 if the score is a beta cutoff
     int bestMove;
     heuristic_t score;
     struct _hash_table_list *next;
