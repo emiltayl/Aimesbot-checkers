@@ -18,7 +18,7 @@ heuristic_t calculate_heuristics(int isItSelfTurn) {
     score += population_score();
 
     // Runaway man
-    score += ((0x00000010 & (gamestate.self & (~gamestate.kings))) && !(0x00000001 & gamestate.occupied)) * 47;
+    /*score += ((0x00000010 & (gamestate.self & (~gamestate.kings))) && !(0x00000001 & gamestate.occupied)) * 47;
     score -= ((0x01000000 & (gamestate.other & (~gamestate.kings))) && !(0x30000000 & gamestate.occupied)) * 47;
     score += ((0x00000020 & (gamestate.self & (~gamestate.kings))) && !(0x00000003 & gamestate.occupied)) * 47;
     score -= ((0x02000000 & (gamestate.other & (~gamestate.kings))) && !(0x60000000 & gamestate.occupied)) * 47;
@@ -33,7 +33,7 @@ heuristic_t calculate_heuristics(int isItSelfTurn) {
     score += ((0x00000400 & (gamestate.self & (~gamestate.kings))) && !(0x000000CE & gamestate.occupied)) * 44;
     score -= ((0x00400000 & (gamestate.other & (~gamestate.kings))) && !(0xE6000000 & gamestate.occupied)) * 44;
     score += ((0x00000800 & (gamestate.self & (~gamestate.kings))) && !(0x0000008C & gamestate.occupied)) * 44;
-    score -= ((0x00800000 & (gamestate.other & (~gamestate.kings))) && !(0x88000000 & gamestate.occupied)) * 44;
+    score -= ((0x00800000 & (gamestate.other & (~gamestate.kings))) && !(0x88000000 & gamestate.occupied)) * 44;*/
 
     // Back row bonus
     score += population_count(0xF0000000 & gamestate.occupied) * 7;
