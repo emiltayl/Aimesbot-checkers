@@ -11,6 +11,7 @@
 
 typedef int32_t heuristic_t;
 
+heuristic_t population_score();
 heuristic_t calculate_heuristics(int isItSelfTurn);
 
 #endif

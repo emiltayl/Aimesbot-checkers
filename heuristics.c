@@ -2,23 +2,20 @@
 #include "checkerboard.h"
 #include "heuristics.h"
 
+heuristic_t population_score() {
+    return (population_count(gamestate.self) - population_count(gamestate.other)) * 100
+        + (population_count(gamestate.self & gamestate.kings) - population_count(gamestate.other & gamestate.kings)) * 50;
+}
+
 /**
  * Calculates the heuristic score for the AI
  */
 heuristic_t calculate_heuristics(int isItSelfTurn) {
-    int selfCount = population_count(gamestate.self),
-        otherCount = population_count(gamestate.other),
-        selfKingCount = population_count(gamestate.self & gamestate.kings),
-        otherKingCount = population_count(gamestate.other & gamestate.kings);
-
     // Turn bonus
     heuristic_t score = (isItSelfTurn << 3) - (isItSelfTurn << 1) - 3; //isItSelfTurn*6-3
 
     // Material + king bonus
-    score += selfCount * 100;
-    score -= otherCount * 100;
-    score += selfKingCount * 50;
-    score -= otherKingCount* 50;
+    score += population_score();
 
     // Runaway man
     score += ((0x00000010 & (gamestate.self & (~gamestate.kings))) && !(0x00000001 & gamestate.occupied)) * 47;

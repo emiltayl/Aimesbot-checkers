@@ -194,7 +194,7 @@ heuristic_t alphaSearch(int depth, heuristic_t alpha, heuristic_t beta, unsigned
 
     if (moveList.moveCount == 0) {
         *branchMask = 0;
-        return HEURISTIC_LOSS + calculate_heuristics(1) - depth;
+        return HEURISTIC_LOSS + population_score() - depth;
     }
 
     do_move(moveList, bestMove, &gamestate.self);
@@ -336,7 +336,7 @@ heuristic_t betaSearch(int depth, heuristic_t alpha, heuristic_t beta, unsigned 
 
     if (moveList.moveCount == 0) {
         *branchMask = 0;
-        return HEURISTIC_WIN + calculate_heuristics(0) + depth;
+        return HEURISTIC_WIN + population_score() + depth;
     }
 
     do_move(moveList, bestMove, &gamestate.other);
