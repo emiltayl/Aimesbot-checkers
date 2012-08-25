@@ -61,8 +61,8 @@ int main(int argc, char **argv) {
         printMove(*global_bestFrom, *global_bestTo, argv[1][33] == 'O');
     }
 
-    printf("\n%u nodes visited\n", nodesVisited);
-    printf("%d depth reached\n", depthSearched);
+    //printf("\n%u nodes visited\n", nodesVisited);
+    //printf("%d depth reached\n", depthSearched);
 
     return EXIT_SUCCESS;
 }
