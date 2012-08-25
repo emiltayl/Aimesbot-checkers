@@ -47,14 +47,13 @@ int main(int argc, char **argv) {
     struct timespec sleepTime, remaining;
 
     sleepTime.tv_sec = 9;
-    sleepTime.tv_nsec = 850000000;
+    sleepTime.tv_nsec = 500000000;
 
     pthread_create(&thread, NULL, runSearch, NULL);
 
     nanosleep(&sleepTime, &remaining);
 
     pthread_mutex_lock(&mutex);
-    pthread_kill(thread, SIGSTOP);
 
     if (global_bestJump != NULL) {
         printJump(*global_bestJump, argv[1][33] == 'O');
